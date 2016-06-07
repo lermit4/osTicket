@@ -260,6 +260,7 @@ class FA_AutoCannedResponse extends TriggerAction {
             'canned_id' => new ChoiceField(array(
                 'default' => false,
                 'choices' => $choices,
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -289,7 +290,8 @@ class FA_RouteDepartment extends TriggerAction {
                 'validators' => function($self, $clean) {
                     if ($clean === ':new:')
                         $self->addError(__('Select a department'));
-                }
+                },
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -318,6 +320,7 @@ class FA_AssignPriority extends TriggerAction {
             'priority' => new ChoiceField(array(
                 'configuration' => array('prompt' => __('Unchanged')),
                 'choices' => $choices,
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -340,6 +343,7 @@ class FA_AssignSLA extends TriggerAction {
             'sla_id' => new ChoiceField(array(
                 'configuration' => array('prompt' => __('Unchanged')),
                 'choices' => $choices,
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -370,7 +374,8 @@ class FA_AssignTeam extends TriggerAction {
                 'validators' => function($self, $clean) {
                     if ($clean === ':new:')
                         $self->addError(__('Select a Team'));
-                }
+                },
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -393,6 +398,7 @@ class FA_AssignAgent extends TriggerAction {
             'staff_id' => new ChoiceField(array(
                 'configuration' => array('prompt' => __('Unchanged')),
                 'choices' => $choices,
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -415,6 +421,7 @@ class FA_AssignTopic extends TriggerAction {
             'topic_id' => new ChoiceField(array(
                 'configuration' => array('prompt' => __('Unchanged')),
                 'choices' => $choices,
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -447,6 +454,7 @@ class FA_SetStatus extends TriggerAction {
             'status_id' => new ChoiceField(array(
                 'configuration' => array('prompt' => __('Unchanged')),
                 'choices' => $choices,
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -538,7 +546,8 @@ class FA_SendEmail extends TriggerAction {
                                 $M->mailbox . '@' . $M->host));
                         }
                     }
-                }
+                },
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'subject' => new TextboxField(array(
                 'required' => true,
@@ -546,6 +555,7 @@ class FA_SendEmail extends TriggerAction {
                     'size' => 80,
                     'placeholder' => __('Subject')
                 ),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'message' => new TextareaField(array(
                 'required' => true,
@@ -554,11 +564,13 @@ class FA_SendEmail extends TriggerAction {
                     'html' => true,
                     'context' => 'fa:send_email',
                 ),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'from' => new ChoiceField(array(
                 'label' => __('From Email'),
                 'choices' => $choices,
                 'default' => '',
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
