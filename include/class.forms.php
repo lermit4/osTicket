@@ -1244,15 +1244,21 @@ class TextboxField extends FormField {
         return array(
             'size'  =>  new TextboxField(array(
                 'id'=>1, 'label'=>__('Size'), 'required'=>false, 'default'=>16,
-                    'validator' => 'number')),
+                'validator' => 'number',
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
+                )),
             'length' => new TextboxField(array(
                 'id'=>2, 'label'=>__('Max Length'), 'required'=>false, 'default'=>30,
-                    'validator' => 'number')),
+                    'validator' => 'number',
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
+                )),
             'validator' => new ChoiceField(array(
                 'id'=>3, 'label'=>__('Validator'), 'required'=>false, 'default'=>'',
                 'choices' => array('phone'=>__('Phone Number'),'email'=>__('Email Address'),
                     'ip'=>__('IP Address'), 'number'=>__('Number'),
-                    'regex'=>__('Custom (Regular Expression)'), ''=>__('None')))),
+                    'regex'=>__('Custom (Regular Expression)'), ''=>__('None')),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
+                )),
             'regex' => new TextboxField(array(
                 'id'=>6, 'label'=>__('Regular Expression'), 'required'=>true,
                 'configuration'=>array('size'=>40, 'length'=>100),
@@ -1274,19 +1280,24 @@ class TextboxField extends FormField {
                 'validators' => function($self, $v) {
                     if (false === @preg_match($v, ' '))
                         $self->addError(__('Cannot compile this regular expression'));
-                })),
+                },
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
+                )),
             'validator-error' => new TextboxField(array(
                 'id'=>4, 'label'=>__('Validation Error'), 'default'=>'',
                 'configuration'=>array('size'=>40, 'length'=>60,
                     'translatable'=>$this->getTranslateTag('validator-error')
                 ),
-                'hint'=>__('Message shown to user if the input does not match the validator'))),
+                'hint'=>__('Message shown to user if the input does not match the validator'),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
+                )),
             'placeholder' => new TextboxField(array(
                 'id'=>5, 'label'=>__('Placeholder'), 'required'=>false, 'default'=>'',
                 'hint'=>__('Text shown in before any input from the user'),
                 'configuration'=>array('size'=>40, 'length'=>40,
                     'translatable'=>$this->getTranslateTag('placeholder')
                 ),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -1361,19 +1372,24 @@ class TextareaField extends FormField {
     function getConfigurationOptions() {
         return array(
             'cols'  =>  new TextboxField(array(
-                'id'=>1, 'label'=>__('Width').' '.__('(chars)'), 'required'=>true, 'default'=>40)),
+                'id'=>1, 'label'=>__('Width').' '.__('(chars)'), 'required'=>true, 'default'=>40,
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,)),
             'rows'  =>  new TextboxField(array(
-                'id'=>2, 'label'=>__('Height').' '.__('(rows)'), 'required'=>false, 'default'=>4)),
+                'id'=>2, 'label'=>__('Height').' '.__('(rows)'), 'required'=>false, 'default'=>4,
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,)),
             'length' => new TextboxField(array(
-                'id'=>3, 'label'=>__('Max Length'), 'required'=>false, 'default'=>0)),
+                'id'=>3, 'label'=>__('Max Length'), 'required'=>false, 'default'=>0,
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,)),
             'html' => new BooleanField(array(
                 'id'=>4, 'label'=>__('HTML'), 'required'=>false, 'default'=>true,
-                'configuration'=>array('desc'=>__('Allow HTML input in this box')))),
+                'configuration'=>array('desc'=>__('Allow HTML input in this box')),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,)),
             'placeholder' => new TextboxField(array(
                 'id'=>5, 'label'=>__('Placeholder'), 'required'=>false, 'default'=>'',
                 'hint'=>__('Text shown in before any input from the user'),
                 'configuration'=>array('size'=>40, 'length'=>40,
                     'translatable'=>$this->getTranslateTag('placeholder')),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -1419,16 +1435,19 @@ class PhoneField extends FormField {
                 'configuration'=>array(
                     'desc'=>__('Add a separate field for the extension'),
                 ),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'digits' => new TextboxField(array(
                 'label'=>__('Minimum length'), 'default'=>7,
                 'hint'=>__('Fewest digits allowed in a valid phone number'),
                 'configuration'=>array('validator'=>'number', 'size'=>5),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'format' => new ChoiceField(array(
                 'label'=>__('Display format'), 'default'=>'us',
                 'choices'=>array(''=>'-- '.__('Unformatted').' --',
                     'us'=>__('United States')),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -1484,7 +1503,8 @@ class BooleanField extends FormField {
             'desc' => new TextareaField(array(
                 'id'=>1, 'label'=>__('Description'), 'required'=>false, 'default'=>'',
                 'hint'=>__('Text shown inline with the widget'),
-                'configuration'=>array('rows'=>2)))
+                'configuration'=>array('rows'=>2),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,))
         );
     }
 
@@ -1539,12 +1559,14 @@ class ChoiceField extends FormField {
             'choices'  =>  new TextareaField(array(
                 'id'=>1, 'label'=>__('Choices'), 'required'=>false, 'default'=>'',
                 'hint'=>__('List choices, one per line. To protect against spelling changes, specify key:value names to preserve entries if the list item names change'),
-                'configuration'=>array('html'=>false)
+                'configuration'=>array('html'=>false),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'default' => new TextboxField(array(
                 'id'=>3, 'label'=>__('Default'), 'required'=>false, 'default'=>'',
                 'hint'=>__('(Enter a key). Value selected from the list initially'),
                 'configuration'=>array('size'=>20, 'length'=>40),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'prompt' => new TextboxField(array(
                 'id'=>2, 'label'=>__('Prompt'), 'required'=>false, 'default'=>'',
@@ -1552,11 +1574,13 @@ class ChoiceField extends FormField {
                 'configuration'=>array('size'=>40, 'length'=>40,
                     'translatable'=>$this->getTranslateTag('prompt'),
                 ),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'multiselect' => new BooleanField(array(
                 'id'=>1, 'label'=>'Multiselect', 'required'=>false, 'default'=>false,
                 'configuration'=>array(
-                    'desc'=>'Allow multiple selections')
+                    'desc'=>'Allow multiple selections'),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -1798,21 +1822,30 @@ class DatetimeField extends FormField {
             'time' => new BooleanField(array(
                 'id'=>1, 'label'=>__('Time'), 'required'=>false, 'default'=>false,
                 'configuration'=>array(
-                    'desc'=>__('Show time selection with date picker')))),
+                    'desc'=>__('Show time selection with date picker')),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
+                )),
             'gmt' => new BooleanField(array(
                 'id'=>2, 'label'=>__('Timezone Aware'), 'required'=>false,
                 'configuration'=>array(
-                    'desc'=>__("Show date/time relative to user's timezone")))),
+                    'desc'=>__("Show date/time relative to user's timezone")),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
+                )),
             'min' => new DatetimeField(array(
                 'id'=>3, 'label'=>__('Earliest'), 'required'=>false,
-                'hint'=>__('Earliest date selectable'))),
+                'hint'=>__('Earliest date selectable'),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
+                )),
             'max' => new DatetimeField(array(
                 'id'=>4, 'label'=>__('Latest'), 'required'=>false,
-                'default'=>null, 'hint'=>__('Latest date selectable'))),
+                'default'=>null, 'hint'=>__('Latest date selectable'),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
+                )),
             'future' => new BooleanField(array(
                 'id'=>5, 'label'=>__('Allow Future Dates'), 'required'=>false,
                 'default'=>true, 'configuration'=>array(
                     'desc'=>__('Allow entries into the future' /* Used in the date field */)),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -2046,7 +2079,8 @@ class ThreadEntryField extends FormField {
                 'validators' => function($self, $value) {
                     if (!ini_get('file_uploads'))
                         $self->addError(__('The "file_uploads" directive is disabled in php.ini'));
-                }
+                },
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         )
         + $fileupload_config;
@@ -2147,12 +2181,14 @@ class PriorityField extends ChoiceField {
                 'id'=>2, 'label'=>__('Prompt'), 'required'=>false, 'default'=>'',
                 'hint'=>__('Leading text shown before a value is selected'),
                 'configuration'=>array('size'=>40, 'length'=>40),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'default' => new ChoiceField(array(
                 'id'=>3, 'label'=>__('Default'), 'required'=>false, 'default'=>'',
                 'choices' => $choices,
                 'hint'=>__('Default selection for this field'),
                 'configuration'=>array('size'=>20, 'length'=>40),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -2228,6 +2264,7 @@ class DepartmentField extends ChoiceField {
                 'id'=>2, 'label'=>__('Prompt'), 'required'=>false, 'default'=>'',
                 'hint'=>__('Leading text shown before a value is selected'),
                 'configuration'=>array('size'=>40, 'length'=>40),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -2349,6 +2386,7 @@ class AssigneeField extends ChoiceField {
                 'id'=>2, 'label'=>__('Prompt'), 'required'=>false, 'default'=>'',
                 'hint'=>__('Leading text shown before a value is selected'),
                 'configuration'=>array('size'=>40, 'length'=>40),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -2430,6 +2468,7 @@ class TicketStateField extends ChoiceField {
                 'id'=>2, 'label'=> __('Prompt'), 'required'=>false, 'default'=>'',
                 'hint'=> __('Leading text shown before a value is selected'),
                 'configuration'=>array('size'=>40, 'length'=>40),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -2497,6 +2536,7 @@ class TicketFlagField extends ChoiceField {
                 'id'=>2, 'label'=>'Prompt', 'required'=>false, 'default'=>'',
                 'hint'=>'Leading text shown before a value is selected',
                 'configuration'=>array('size'=>40, 'length'=>40),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -2561,19 +2601,22 @@ class FileUploadField extends FormField {
                 'label'=>__('Maximum File Size'),
                 'hint'=>__('Choose maximum size of a single file uploaded to this field'),
                 'default'=>$cfg->getMaxFileSize(),
-                'choices'=>$sizes
+                'choices'=>$sizes,
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'mimetypes' => new ChoiceField(array(
                 'label'=>__('Restrict by File Type'),
                 'hint'=>__('Optionally, choose acceptable file types.'),
                 'required'=>false,
                 'choices'=>$types,
-                'configuration'=>array('multiselect'=>true,'prompt'=>__('No restrictions'))
+                'configuration'=>array('multiselect'=>true,'prompt'=>__('No restrictions')),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'extensions' => new TextareaField(array(
                 'label'=>__('Additional File Type Filters'),
                 'hint'=>__('Optionally, enter comma-separated list of additional file types, by extension. (e.g .doc, .pdf).'),
                 'configuration'=>array('html'=>false, 'rows'=>2),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'max' => new TextboxField(array(
                 'label'=>__('Maximum Files'),
@@ -2582,6 +2625,7 @@ class FileUploadField extends FormField {
                 'required'=>false,
                 'validator'=>'number',
                 'configuration'=>array('size'=>8, 'length'=>4, 'placeholder'=>__('No limit')),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             ))
         );
     }
@@ -2960,7 +3004,8 @@ class InlineDynamicFormField extends FormField {
         return array(
             'form' => new ChoiceField(array(
                 'id'=>2, 'label'=>'Inline Form', 'required'=>true,
-                'default'=>'', 'choices'=>$choices
+                'default'=>'', 'choices'=>$choices,
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
@@ -3803,12 +3848,14 @@ class FreeTextField extends FormField {
                 'configuration' => array('html' => true, 'size'=>'large'),
                 'label'=>__('Content'), 'required'=>true, 'default'=>'',
                 'hint'=>__('Free text shown in the form, such as a disclaimer'),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'attachments' => new FileUploadField(array(
                 'id'=>'attach',
                 'label' => __('Attachments'),
                 'name'=>'files',
-                'configuration' => array('extensions'=>'')
+                'configuration' => array('extensions'=>''),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
