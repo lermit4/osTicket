@@ -3035,6 +3035,8 @@ class TextboxWidget extends Widget {
     static $input_type = 'text';
 
     function render($options=array(), $extraConfig=false) {
+        global $thisstaff, $thisclient;
+        $user = $options['user'] ?: $thisstaff ?: $thisclient;
         $config = $this->field->getConfiguration();
         if (is_array($extraConfig)) {
             foreach ($extraConfig as $k=>$v)
@@ -3071,7 +3073,7 @@ class TextboxWidget extends Widget {
                 $size, $maxlength, $classes, $autocomplete, $disabled,
                 $translatable, $placeholder, $autofocus))); ?>
             name="<?php echo $this->name; ?>"
-            value="<?php echo Format::htmlchars($this->value); ?>"/>
+            value="<?php echo Format::htmlchars($this->value); ?>"<?php echo !$this->field->isEditable($user)?' disabled':"" ;?>/>
         <?php
     }
 }
@@ -3119,6 +3121,8 @@ class PasswordWidget extends TextboxWidget {
 
 class TextareaWidget extends Widget {
     function render($options=array()) {
+        global $thisstaff, $thisclient;
+        $user = $options['user'] ?: $thisstaff ?: $thisclient;
         $config = $this->field->getConfiguration();
         $class = $cols = $rows = $maxlength = "";
         $attrs = array();
@@ -3142,7 +3146,7 @@ class TextareaWidget extends Widget {
                 .' '.Format::array_implode('=', ' ', $attrs)
                 .' placeholder="'.$config['placeholder'].'"'; ?>
             id="<?php echo $this->id; ?>"
-            name="<?php echo $this->name; ?>"><?php
+            name="<?php echo $this->name; ?>"<?php echo !$this->field->isEditable($user)?' disabled':"" ;?>><?php
                 echo Format::htmlchars($this->value);
             ?></textarea>
         </span>
@@ -3167,6 +3171,8 @@ class TextareaWidget extends Widget {
 
 class PhoneNumberWidget extends Widget {
     function render($options=array()) {
+        global $thisstaff, $thisclient;
+        $user = $options['user'] ?: $thisstaff ?: $thisclient;
         $config = $this->field->getConfiguration();
         list($phone, $ext) = explode("X", $this->value);
         ?>
@@ -3177,7 +3183,7 @@ class PhoneNumberWidget extends Widget {
         if ($ext || $config['ext']) { ?> <?php echo __('Ext'); ?>:
             <input type="text" name="<?php
             echo $this->name; ?>-ext" value="<?php echo Format::htmlchars($ext);
-                ?>" size="5"/>
+                ?>" size="5"<?php echo !$this->field->isEditable($user)?' disabled':"" ;?>/>
         <?php }
     }
 
@@ -3196,6 +3202,8 @@ class PhoneNumberWidget extends Widget {
 class ChoicesWidget extends Widget {
     function render($options=array()) {
 
+        global $thisstaff, $thisclient;
+        $user = $options['user'] ?: $thisstaff ?: $thisclient;
         $mode = null;
         if (isset($options['mode']))
             $mode = $options['mode'];
@@ -3210,7 +3218,6 @@ class ChoicesWidget extends Widget {
             return;
         }
 
-        $config = $this->field->getConfiguration();
         if ($mode == 'search') {
             $config['multiselect'] = true;
         }
@@ -3250,7 +3257,7 @@ class ChoicesWidget extends Widget {
         ?>
         <select name="<?php echo $this->name; ?>[]"
             <?php echo implode(' ', array_filter(array($classes))); ?>
-            id="<?php echo $this->id; ?>"
+            id="<?php echo $this->id; ?>"<?php echo !$this->field->isEditable($user)?' disabled':"" ;?>
             <?php if (isset($config['data']))
               foreach ($config['data'] as $D=>$V)
                 echo ' data-'.$D.'="'.Format::htmlchars($V).'"';
@@ -3355,35 +3362,37 @@ class ChoicesWidget extends Widget {
  */
 class BoxChoicesWidget extends Widget {
     function render($options=array()) {
-        $this->emitChoices($this->field->getChoices());
+        $this->emitChoices($this->field->getChoices(), $options);
     }
 
-    function emitChoices($choices) {
-      static $uid = 1;
+    function emitChoices($choices, $options=array()) {
+        static $uid = 1;
+        global $thisstaff, $thisclient;
+        $user = $options['user'] ?: $thisstaff ?: $thisclient;
 
-      if (!isset($this->value))
-          $this->value = $this->field->get('default');
-      $config = $this->field->getConfiguration();
-      $type = $config['multiple'] ? 'checkbox' : 'radio';
+        if (!isset($this->value))
+            $this->value = $this->field->get('default');
+        $config = $this->field->getConfiguration();
+        $type = $config['multiple'] ? 'checkbox' : 'radio';
 
-      $classes = array('checkbox');
-      if (isset($config['classes']))
-          $classes = array_merge($classes, (array) $config['classes']);
+        $classes = array('checkbox');
+        if (isset($config['classes']))
+            $classes = array_merge($classes, (array) $config['classes']);
 
-      foreach ($choices as $k => $v) {
-          if (is_array($v)) {
-              $this->renderSectionBreak($k);
-              $this->emitChoices($v);
-              continue;
-          }
-          $id = sprintf("%s-%s", $this->id, $uid++);
+        foreach ($choices as $k => $v) {
+            if (is_array($v)) {
+                $this->renderSectionBreak($k);
+                $this->emitChoices($v);
+                continue;
+            }
+            $id = sprintf("%s-%s", $this->id, $uid++);
 ?>
         <label class="<?php echo implode(' ', $classes); ?>"
             for="<?php echo $id; ?>">
         <input id="<?php echo $id; ?>" type="<?php echo $type; ?>"
             name="<?php echo $this->name; ?>[]" <?php
             if ($this->value[$k]) echo 'checked="checked"'; ?> value="<?php
-            echo Format::htmlchars($k); ?>"/>
+            echo Format::htmlchars($k); ?>"<?php echo !$this->field->isEditable($user)?' disabled':"" ;?>/>
         <?php
         if ($v) {
             echo Format::viewableImages($v);
@@ -3431,7 +3440,7 @@ class TabbedBoxChoicesWidget extends BoxChoicesWidget {
                 $tabs[$label] = $group;
             }
             else {
-                $this->emitChoices(array($label=>$group));
+                $this->emitChoices(array($label=>$group), $options);
             }
         }
         if ($tabs) {
@@ -3451,7 +3460,7 @@ class TabbedBoxChoicesWidget extends BoxChoicesWidget {
                 $first = $i++ == 0; ?>
                 <div class="tab_content <?php if (!$first) echo 'hidden'; ?>" id="<?php
                   echo sprintf('%s-%s', $this->name, Format::slugify($label));?>">
-<?php           $this->emitChoices($group); ?>
+<?php           $this->emitChoices($group, $options); ?>
                 </div>
 <?php       } ?>
             </div>
@@ -3466,6 +3475,8 @@ class CheckboxWidget extends Widget {
     }
 
     function render($options=array()) {
+        global $thisstaff, $thisclient;
+        $user = $options['user'] ?: $thisstaff ?: $thisclient;
         $config = $this->field->getConfiguration();
         if (!isset($this->value))
             $this->value = $this->field->get('default');
@@ -3477,7 +3488,7 @@ class CheckboxWidget extends Widget {
         <input id="<?php echo $this->id; ?>"
             type="checkbox" name="<?php echo $this->name; ?>[]" <?php
             if ($this->value) echo 'checked="checked"'; ?> value="<?php
-            echo $this->field->get('id'); ?>"/>
+            echo $this->field->get('id'); ?>"<?php echo !$this->field->isEditable($user)?' disabled':"" ;?>/>
         <?php
         if ($config['desc']) {
             echo Format::viewableImages($config['desc']);
@@ -3503,7 +3514,8 @@ class CheckboxWidget extends Widget {
 
 class DatetimePickerWidget extends Widget {
     function render($options=array()) {
-        global $cfg;
+        global $cfg, $thisstaff, $thisclient;
+        $user = $options['user'] ?: $thisstaff ?: $thisclient;
 
         $config = $this->field->getConfiguration();
         if ($this->value) {
@@ -3523,7 +3535,7 @@ class DatetimePickerWidget extends Widget {
         <input type="text" name="<?php echo $this->name; ?>"
             id="<?php echo $this->id; ?>" style="display:inline-block;width:auto"
             value="<?php echo Format::htmlchars($this->value); ?>" size="12"
-            autocomplete="off" class="dp" />
+            autocomplete="off" class="dp"<?php echo !$this->field->isEditable($user)?' disabled':"" ;?> />
         <script type="text/javascript">
             $(function() {
                 $('input[name="<?php echo $this->name; ?>"]').datepicker({
@@ -3591,6 +3603,9 @@ class SectionBreakWidget extends Widget {
 class ThreadEntryWidget extends Widget {
     function render($options=array()) {
 
+        global $thisstaff, $thisclient;
+        $user = $options['user'] ?: $thisstaff ?: $thisclient;
+
         $config = $this->field->getConfiguration();
         $object_id = false;
         if ($options['client']) {
@@ -3607,7 +3622,7 @@ class ThreadEntryWidget extends Widget {
             placeholder="<?php echo Format::htmlchars($this->field->get('placeholder')); ?>"
             class="<?php if ($config['html']) echo 'richtext';
                 ?> draft draft-delete" <?php echo $attrs; ?>
-            cols="21" rows="8" style="width:80%;"><?php echo
+            cols="21" rows="8" style="width:80%;"<?php echo !$this->field->isEditable($user)?' disabled':"" ;?>><?php echo
             Format::htmlchars($this->value) ?: $draft; ?></textarea>
     <?php
         if (!$config['attachments'])
@@ -3658,6 +3673,8 @@ class FileUploadWidget extends Widget {
     );
 
     function render($options) {
+        global $thisstaff, $thisclient;
+        $user = $options['user'] ?: $thisstaff ?: $thisclient;
         $config = $this->field->getConfiguration();
         $name = $this->field->getFormName();
         $id = substr(md5(spl_object_hash($this)), 10);
@@ -3698,8 +3715,9 @@ class FileUploadWidget extends Widget {
                 '<a href="#" class="manual">', '</a>'); ?>
         <input type="file" multiple="multiple"
             id="file-<?php echo $id; ?>" style="display:none;"
-            accept="<?php echo implode(',', $config['__mimetypes']); ?>"/>
+            accept="<?php echo implode(',', $config['__mimetypes']); ?>"<?php echo !$this->field->isEditable($user)?' disabled':"" ;?>/>
         </div></div>
+        <?php if ($this->field->isEditable($user)) { ?>
         <script type="text/javascript">
         $(function(){$('#<?php echo $id; ?> .dropzone').filedropbox({
           url: 'ajax.php/form/upload/<?php echo $this->field->get('id') ?>',
@@ -3716,6 +3734,7 @@ class FileUploadWidget extends Widget {
           files: <?php echo JsonDataEncoder::encode($files); ?>
         });});
         </script>
+        <?php } ?>
 <?php
     }
 
