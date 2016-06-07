@@ -1610,6 +1610,7 @@ class SelectionField extends FormField {
                 'required'=>false, 'default'=>false,
                 'configuration'=>array(
                     'desc'=>__('Allow multiple selections')),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'widget' => new ChoiceField(array(
                 'id'=>1,
@@ -1627,7 +1628,8 @@ class SelectionField extends FormField {
                     new Q(array('multiselect__eq'=>false)),
                     VisibilityConstraint::HIDDEN
                 ),
-                'hint'=>__('Typeahead will work better for large lists')
+                'hint'=>__('Typeahead will work better for large lists'),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'validator-error' => new TextboxField(array(
                 'id'=>5, 'label'=>__('Validation Error'), 'default'=>'',
@@ -1638,7 +1640,8 @@ class SelectionField extends FormField {
                     new Q(array('widget__eq'=>'textbox')),
                     VisibilityConstraint::HIDDEN
                 ),
-                'hint'=>__('Message shown to user if the item entered is not in the list')
+                'hint'=>__('Message shown to user if the item entered is not in the list'),
+                    'flags'=>   DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'prompt' => new TextboxField(array(
                 'id'=>3,
@@ -1647,11 +1650,13 @@ class SelectionField extends FormField {
                 'configuration'=>array('size'=>40, 'length'=>40,
                     'translatable'=>$this->getTranslateTag('prompt'),
                 ),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
             'default' => new SelectionField(array(
                 'id'=>4, 'label'=>__('Default'), 'required'=>false, 'default'=>'',
                 'list_id'=>$this->getListId(),
                 'configuration' => array('prompt'=>__('Select a Default')),
+                'flags'=> DynamicFormField::FLAG_AGENT_EDIT,
             )),
         );
     }
